@@ -175,8 +175,14 @@ func main() {
 	}
 
 	err := godotenv.Load()
-	if err != nil {
-		log.Warn().Err(err).Msg("It was not possible to load the .env file (it may not exist).")
+	if _, err := os.Stat(".env"); err == nil {
+		if err := godotenv.Load(); err != nil {
+			log.Warn().Err(err).Msg("Failed to load .env file")
+		} else {
+			log.Info().Msg(".env file loaded successfully")
+		}
+	} else {
+		log.Info().Msg("No .env file found, using environment variables")
 	}
 
 	flag.Parse()
